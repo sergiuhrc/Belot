@@ -5,7 +5,9 @@ import com.example.belot.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -30,6 +32,14 @@ public class HomeController {
 
     String winner;
 
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
     @GetMapping("/")
     public ModelAndView homePage(Model model) {
         player.setName("Sergiu");
@@ -38,7 +48,7 @@ public class HomeController {
         listOfPlayers.add(player);
         listOfPlayers.add(player2);
         listOfPlayers.add(player3);
-        if (scoreService.getPlayers().size() == 0) {
+        if (scoreService.getPlayers().isEmpty()) {
             scoreService.createPlayer(player);
             scoreService.createPlayer(player2);
         }
@@ -55,11 +65,13 @@ public class HomeController {
         model.addAttribute("player_name_second", player2.getName());
 
         System.out.println(scoreService.getPlayers());
-        if (scoreService.getPlayerScore(player).size() >= 1) {
-            System.out.println("Winner " + scoreService.getWinner(scoreService.getPlayers()));
+        if (!scoreService.getPlayerScore(player).isEmpty()) {
             if (scoreService.getWinner(scoreService.getPlayers()) != null) {
-                winner = String.valueOf(scoreService.getWinner(scoreService.getPlayers()).getName());
-                return new ModelAndView("redirect:/win-page");
+                System.out.println("Winner " + scoreService.getWinner(scoreService.getPlayers()));
+                if (scoreService.getWinner(scoreService.getPlayers()) != null) {
+                    setWinner(String.valueOf(scoreService.getWinner(scoreService.getPlayers()).getName()));
+                    return new ModelAndView("redirect:/win-page");
+                }
             }
         }
         return new ModelAndView("home-page");
@@ -67,7 +79,7 @@ public class HomeController {
 
     @RequestMapping("/win-page")
     public ModelAndView showWinner(Model model) {
-        model.addAttribute("winner_name", "You win: " + winner);
+        model.addAttribute("winner_name", "You win: " + getWinner());
         return new ModelAndView("win-page");
     }
 
@@ -96,7 +108,7 @@ public class HomeController {
 
     @RequestMapping("/delete-last-score")
     public ModelAndView deleteLastScore() {
-        if (player.getScore().size() > 0) {
+        if (!player.getScore().isEmpty()) {
             scoreService.getPlayerScore(player).remove(player.getScore().size() - 1);
             scoreService.getPlayerScore(player2).remove(player2.getScore().size() - 1);
         }
@@ -105,7 +117,7 @@ public class HomeController {
 
     @RequestMapping("/new-game")
     public ModelAndView newGameStart() {
-        if (player.getScore().size() >= 2) {
+        if (!player.getScore().isEmpty()) {
             scoreService.getPlayerScore(player).removeAll(player.getScore());
             scoreService.getPlayerScore(player2).removeAll(player2.getScore());
         }
@@ -114,7 +126,7 @@ public class HomeController {
 
     @RequestMapping("/edit-last-score")
     public ModelAndView editLastScore(@RequestParam(value = "score", required = false) int score, @RequestParam(value = "score2", required = false) int score2) {
-        if (player.getScore().size() >= 1) {
+        if (!player.getScore().isEmpty()) {
             int item = player.getScore().size() - 1;
             int item2 = player.getScore().size() - 1;
             int first = scoreService.getPlayerScore(player).get(player.getScore().size() - 2);
