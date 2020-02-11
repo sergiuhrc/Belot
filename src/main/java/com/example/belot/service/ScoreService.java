@@ -147,53 +147,6 @@ public class ScoreService implements ScoreResource {
         }
     }
 
-    public static void main(String[] args) {
-        ScoreService scoreService = new ScoreService();
-        Player player = new Player();
-        Player player2 = new Player();
-        Player player3 = new Player();
-        Player player4 = new Player();
-        player.setName("Sergiu");
-        player2.setName("Dima");
-        player3.setName("Cristi");
-        player4.setName("Beb");
 
-        scoreService.createPlayer(player);
-//        scoreService.createPlayer(player2);
-//        scoreService.createPlayer(player3);
-//        scoreService.createPlayer(player4);
-        scoreService.setPlayerScore(player, 10, false);
-        scoreService.setPlayerScore(player, 0, true);
-        scoreService.setPlayerScore(player, 5, false);
-        scoreService.setPlayerScore(player, 0, true);
-        scoreService.setPlayerScore(player, 0, true);
-//        scoreService.setPlayerScore(player2, 3, true);
-//        scoreService.setPlayerScore(player3, 4, false);
-//        scoreService.setPlayerScore(player4, 5, false);
-//        scoreService.setPlayerScore(player, 2, false);
-//        scoreService.setPlayerScore(player2, 1, true);
-//        scoreService.setPlayerScore(player3, 120, false);
-//        scoreService.setPlayerScore(player4, 51, false);
-//        System.out.println(scoreService.getWinner(scoreService.getPlayers()));
-//        scoreService.setPlayerScore(player, 1, false);
-//        scoreService.setPlayerScore(player2, 1, true);
-//        scoreService.setPlayerScore(player3, 1, false);
-//        scoreService.setPlayerScore(player4, 1, false);
-
-        System.out.println("Cistiga " + scoreService.getWinner(scoreService.getPlayers()));
-
-        System.out.println(scoreService.getPlayers());
-        System.out.println("--------");
-
-        System.out.println(player.getName() + " " + scoreService.getPlayerScore(player));
-        System.out.println(player2.getName() + " " + player2.getScore());
-        System.out.println(player3.getName() + " " + player3.getScore());
-        System.out.println(player4.getName() + " " + player4.getScore());
-
-        System.out.println("-----------------------------ss");
-//        System.out.println(player.getScore());
-
-
-    }
 
 }
