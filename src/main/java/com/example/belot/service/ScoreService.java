@@ -5,7 +5,10 @@ import com.example.belot.entity.Player;
 import com.example.belot.resource.ScoreResource;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ScoreService implements ScoreResource {
@@ -27,12 +30,11 @@ public class ScoreService implements ScoreResource {
         return playerScore;
     }
 
+    //to do for 3 players
+    Game game = new Game(101);
+
     @Override
     public void setPlayerScore(Player player, int points, boolean isBolt) {
-//        if (player.getScore().size() == 0) {
-//            player.setScore(0);
-//        }
-
         int lastScore = player.getScore().size() - 1;
         try {
             int score = points + player.getScore().get(lastScore);
@@ -47,6 +49,7 @@ public class ScoreService implements ScoreResource {
                 playerScore.put(player, score);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Cauza: " + e.getCause());
             int score = points;
             if (isBolt) {
                 int bolt = player.getBolt() + 1;
@@ -68,59 +71,36 @@ public class ScoreService implements ScoreResource {
         }
     }
 
-    Game game = new Game(101);
-//to do
-    public Player getWinner(List<Player> players) {
+    public String getWinner(List<Player> players) {
 
-
-        List<Player> listOfPlayers = new ArrayList<>();
+        System.out.println("----------->" + game.getPoints());
+        int countPlayersAboveMaxPoints = 0;
+        List<Player> playerList = new ArrayList<>();
+        List<Player> winner = new ArrayList<>();
         for (Player player : players) {
             int lastScore = player.getScore().size() - 1;
             int score = player.getScore().get(lastScore);
             if (score >= game.getPoints()) {
-                listOfPlayers.add(player);
+                countPlayersAboveMaxPoints++;
+                playerList.add(player);
             }
         }
+        System.out.println("PlayerList" + playerList);
+        if (countPlayersAboveMaxPoints == 1 && game.getPoints() == 101) {
+            System.out.println("Found winner on score 101: " + playerList.get(0));
+            winner.add(playerList.get(0));
+            game.setPoints(101);
+            return winner.get(0).getName();
+        } else if (countPlayersAboveMaxPoints == 1 && game.getPoints() == 151) {
+            System.out.println("Found winner on score 151: " + playerList.get(0));
+            winner.add(playerList.get(0));
+            game.setPoints(101);
 
-        if (!listOfPlayers.isEmpty() && listOfPlayers.size() >= 1 && game.getPoints() == 101) {
-
-            List<Integer> integerArrayList = new ArrayList<>();
-            for (Player player : listOfPlayers) {
-                int lastScore = player.getScore().size() - 1;
-                int last = listOfPlayers.get(0).getScore().get(lastScore);
-                integerArrayList.add(last);
-            }
-            System.out.println(">>>>>>>" + integerArrayList);
-            if (integerArrayList.size() == 1) {
-                System.out.println(integerArrayList.size());
-                Integer getMaxPointsPlayer = Collections.max(integerArrayList);
-                for (Player player : listOfPlayers) {
-                    int lastScore = player.getScore().size() - 1;
-                    if (player.getScore().get(lastScore).equals(getMaxPointsPlayer)) {
-                        return player;
-                    }
-                }
-            } else {
-                System.out.println("Else" + integerArrayList.size());
-                game.setPoints(151);
-            }
-
+            return winner.get(0).getName();
+        } else if (countPlayersAboveMaxPoints > 1) {
             System.out.println("Jucam pina la 151");
-        } else if (game.getPoints() == 151) {
-            List<Integer> integerArrayList = new ArrayList<>();
-            for (Player player : listOfPlayers) {
-                int lastScore = player.getScore().size() - 1;
-                int last = listOfPlayers.get(0).getScore().get(lastScore);
-                integerArrayList.add(last);
-            }
-            Integer getMaxPointsPlayer = Collections.max(integerArrayList);
-            for (Player player : listOfPlayers) {
-                int lastScore = player.getScore().size() - 1;
-                if (player.getScore().get(lastScore).equals(getMaxPointsPlayer)) {
-                    return player;
-                }
-            }
-
+            System.out.println("Else statment: " + playerList);
+            game.setPoints(151);
         }
 
         return null;
@@ -153,7 +133,11 @@ public class ScoreService implements ScoreResource {
                 player.setScore(player.getScore().get(lastScore) + MINUSTEN);
                 player.setBolt(0);
             } else if (player.getBolt() < 3) {
-                player.setScore(player.getScore().get(lastScore));
+                if (player.getScore().isEmpty()) {
+                    player.setScore(0);
+                } else {
+                    player.setScore(player.getScore().get(lastScore));
+                }
             }
         }
     }

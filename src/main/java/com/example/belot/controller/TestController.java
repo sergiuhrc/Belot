@@ -44,7 +44,7 @@ public class TestController {
     public ModelAndView homePage(Model model) {
         player.setName("Sergiu");
         player2.setName("Dima");
-        player3.setName("Jora");
+        player3.setName("Alex");
         listOfPlayers.add(player);
         listOfPlayers.add(player2);
         listOfPlayers.add(player3);
@@ -55,64 +55,48 @@ public class TestController {
         }
         //get last 4 elements from player score
         List<?> tail = player.getScore().subList(Math.max(player.getScore().size() - 4, 0), player.getScore().size());
-        List<?> tail2 = player2.getScore().subList(Math.max(player.getScore().size() - 4, 0), player.getScore().size());
-        List<?> tail3 = player3.getScore().subList(Math.max(player.getScore().size() - 4, 0), player.getScore().size());
+        List<?> tail2 = player2.getScore().subList(Math.max(player2.getScore().size() - 4, 0), player2.getScore().size());
+        List<?> tail3 = player3.getScore().subList(Math.max(player3.getScore().size() - 4, 0), player3.getScore().size());
 
-
-        System.out.println(scoreService.getPlayerScore(player));
-        System.out.println(scoreService.getPlayerScore(player2));
-        System.out.println(scoreService.getPlayerScore(player3));
         model.addAttribute("player_score", tail);
         model.addAttribute("player_score2", tail2);
         model.addAttribute("player_score3", tail3);
         model.addAttribute("player_name", player.getName());
         model.addAttribute("player_name_second", player2.getName());
-        model.addAttribute("player_name_third", player2.getName());
+        model.addAttribute("player_name_third", player3.getName());
 
-        System.out.println(scoreService.getPlayers());
-        if (!scoreService.getPlayerScore(player).isEmpty()) {
-            if (scoreService.getWinner(scoreService.getPlayers()) != null) {
-                System.out.println("Winner " + scoreService.getWinner(scoreService.getPlayers()));
-                if (scoreService.getWinner(scoreService.getPlayers()) != null) {
-                    setWinner(String.valueOf(scoreService.getWinner(scoreService.getPlayers()).getName()));
-                    return new ModelAndView("redirect:/win-page");
-                }
-            }
-        }
+
         return new ModelAndView("home-page-test");
     }
 
-    @RequestMapping("test/win-page")
-    public ModelAndView showWinner(Model model) {
-        model.addAttribute("winner_name", "You win: " + getWinner());
-        return new ModelAndView("/test/win-page");
-    }
 
-
-    @RequestMapping("test/add-score")
+    @RequestMapping("/test/add-score")
     public ModelAndView addScore(@RequestParam(value = "score", required = false) String score, @RequestParam(value = "score2", required = false) String score2, @RequestParam(value = "score3", required = false) String score3) {
 
         try {
-
             scoreService.setPlayerScore(player, Integer.parseInt(score), false);
-            System.out.println("is not Exception");
         } catch (Exception e) {
-            System.out.println("exception");
             scoreService.setPlayerScore(player, true);
         }
         try {
             scoreService.setPlayerScore(player2, Integer.parseInt(score2), false);
-            System.out.println("is not Exception");
         } catch (Exception e) {
-            System.out.println("exception");
             scoreService.setPlayerScore(player2, true);
         }
         try {
             scoreService.setPlayerScore(player3, Integer.parseInt(score3), false);
-            System.out.println("is not Exception");
         } catch (Exception e) {
-            System.out.println("exception");
             scoreService.setPlayerScore(player3, true);
+        }
+        System.out.println(scoreService.getPlayers());
+        if (!scoreService.getPlayerScore(player).isEmpty()) {
+//                System.out.println("Winner " + scoreService.getWinner(scoreService.getPlayers()));
+            String win = scoreService.getWinner(scoreService.getPlayers());
+            if (win != null) {
+                System.out.println("Winnerrrrrrrrrrrrrrrrrrrrrr>" + win);
+                setWinner(win);
+                return new ModelAndView("redirect:/win-page-test");
+            }
         }
 
         return new ModelAndView("redirect:/test");
@@ -130,30 +114,33 @@ public class TestController {
 
     @RequestMapping("test/new-game")
     public ModelAndView newGameStart() {
-        if (!player.getScore().isEmpty()) {
-            scoreService.getPlayerScore(player).removeAll(player.getScore());
-            scoreService.getPlayerScore(player2).removeAll(player2.getScore());
-            scoreService.getPlayerScore(player3).removeAll(player3.getScore());
-        }
+        scoreService.getPlayerScore(player).removeAll(scoreService.getPlayerScore(player));
+        scoreService.getPlayerScore(player2).removeAll(scoreService.getPlayerScore(player2));
+        scoreService.getPlayerScore(player3).removeAll(scoreService.getPlayerScore(player3));
+
         return new ModelAndView("redirect:/test");
     }
 
-    @RequestMapping("/test/edit-last-score")
+    @RequestMapping("test/edit-last-score")
     public ModelAndView editLastScore(@RequestParam(value = "score", required = false) int score, @RequestParam(value = "score2", required = false) int score2, @RequestParam(value = "score3", required = false) int score3) {
         if (!player.getScore().isEmpty()) {
             int item = player.getScore().size() - 1;
-            int item2 = player.getScore().size() - 1;
-            int item3 = player.getScore().size() - 1;
+
             int first = scoreService.getPlayerScore(player).get(player.getScore().size() - 2);
             int second = scoreService.getPlayerScore(player2).get(player2.getScore().size() - 2);
             int third = scoreService.getPlayerScore(player3).get(player3.getScore().size() - 2);
             scoreService.getPlayerScore(player).set(item, first + score);
-            scoreService.getPlayerScore(player2).set(item2, second + score2);
-            scoreService.getPlayerScore(player3).set(item3, third + score3);
+            scoreService.getPlayerScore(player2).set(item, second + score2);
+            scoreService.getPlayerScore(player3).set(item, third + score3);
         }
 
         return new ModelAndView("redirect:/test");
     }
 
+    @RequestMapping("/win-page-test")
+    public ModelAndView showWinner(Model model) {
+        model.addAttribute("winner_name", "You win: " + getWinner());
+        return new ModelAndView("win-page-test");
+    }
 
 }

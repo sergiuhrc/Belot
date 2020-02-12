@@ -44,17 +44,15 @@ public class HomeController {
     public ModelAndView homePage(Model model) {
         player.setName("Sergiu");
         player2.setName("Dima");
-        player3.setName("Jora");
         listOfPlayers.add(player);
         listOfPlayers.add(player2);
-        listOfPlayers.add(player3);
         if (scoreService.getPlayers().isEmpty()) {
             scoreService.createPlayer(player);
             scoreService.createPlayer(player2);
         }
         //get last 4 elements from player score
         List<?> tail = player.getScore().subList(Math.max(player.getScore().size() - 4, 0), player.getScore().size());
-        List<?> tail2 = player2.getScore().subList(Math.max(player.getScore().size() - 4, 0), player.getScore().size());
+        List<?> tail2 = player2.getScore().subList(Math.max(player2.getScore().size() - 4, 0), player2.getScore().size());
 
 
         System.out.println(scoreService.getPlayerScore(player));
@@ -64,16 +62,7 @@ public class HomeController {
         model.addAttribute("player_name", player.getName());
         model.addAttribute("player_name_second", player2.getName());
 
-        System.out.println(scoreService.getPlayers());
-        if (!scoreService.getPlayerScore(player).isEmpty()) {
-            if (scoreService.getWinner(scoreService.getPlayers()) != null) {
-                System.out.println("Winner " + scoreService.getWinner(scoreService.getPlayers()));
-                if (scoreService.getWinner(scoreService.getPlayers()) != null) {
-                    setWinner(String.valueOf(scoreService.getWinner(scoreService.getPlayers()).getName()));
-                    return new ModelAndView("redirect:/win-page");
-                }
-            }
-        }
+
         return new ModelAndView("home-page");
     }
 
@@ -88,19 +77,28 @@ public class HomeController {
     public ModelAndView addScore(@RequestParam(value = "score", required = false) String score, @RequestParam(value = "score2", required = false) String score2) {
 
         try {
-
             scoreService.setPlayerScore(player, Integer.parseInt(score), false);
-            System.out.println("is not Exception");
         } catch (Exception e) {
-            System.out.println("exception");
             scoreService.setPlayerScore(player, true);
         }
         try {
             scoreService.setPlayerScore(player2, Integer.parseInt(score2), false);
-            System.out.println("is not Exception");
         } catch (Exception e) {
-            System.out.println("exception");
             scoreService.setPlayerScore(player2, true);
+        }
+        System.out.println(scoreService.getPlayers());
+        if (!scoreService.getPlayerScore(player).isEmpty()) {
+//                System.out.println("Winner " + scoreService.getWinner(scoreService.getPlayers()));
+            try {
+                String win = scoreService.getWinner(scoreService.getPlayers());
+                if (win != null) {
+                    System.out.println("Winnerrrrrrrrrrrrrrrrrrrrrr>" + win);
+                    setWinner(win);
+                    return new ModelAndView("redirect:/win-page");
+                }
+            } catch (Exception e) {
+                System.out.println("=-=-=");
+            }
         }
 
         return new ModelAndView("redirect:/");
@@ -117,10 +115,9 @@ public class HomeController {
 
     @RequestMapping("/new-game")
     public ModelAndView newGameStart() {
-        if (!player.getScore().isEmpty()) {
-            scoreService.getPlayerScore(player).removeAll(player.getScore());
-            scoreService.getPlayerScore(player2).removeAll(player2.getScore());
-        }
+        scoreService.getPlayerScore(player).removeAll(scoreService.getPlayerScore(player));
+        scoreService.getPlayerScore(player2).removeAll(scoreService.getPlayerScore(player2));
+
         return new ModelAndView("redirect:/");
     }
 
