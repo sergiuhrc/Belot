@@ -59,6 +59,8 @@ public class HomeController {
         System.out.println(scoreService.getPlayerScore(player2));
         model.addAttribute("player_score", tail);
         model.addAttribute("player_score2", tail2);
+        model.addAttribute("player1_bolt", player.getName() + " " + player.getBolt());
+        model.addAttribute("player2_bolt", player2.getName() + " " + player2.getBolt());
         model.addAttribute("player_name", player.getName());
         model.addAttribute("player_name_second", player2.getName());
 
@@ -77,14 +79,14 @@ public class HomeController {
     public ModelAndView addScore(@RequestParam(value = "score", required = false) String score, @RequestParam(value = "score2", required = false) String score2) {
 
         try {
-            scoreService.setPlayerScore(player, Integer.parseInt(score), false);
+            scoreService.addPlayerScore(player, Integer.parseInt(score), false);
         } catch (Exception e) {
-            scoreService.setPlayerScore(player, true);
+            scoreService.addPlayerScore(player, true);
         }
         try {
-            scoreService.setPlayerScore(player2, Integer.parseInt(score2), false);
+            scoreService.addPlayerScore(player2, Integer.parseInt(score2), false);
         } catch (Exception e) {
-            scoreService.setPlayerScore(player2, true);
+            scoreService.addPlayerScore(player2, true);
         }
         System.out.println(scoreService.getPlayers());
         if (!scoreService.getPlayerScore(player).isEmpty()) {
@@ -122,14 +124,20 @@ public class HomeController {
     }
 
     @RequestMapping("/edit-last-score")
-    public ModelAndView editLastScore(@RequestParam(value = "score", required = false) int score, @RequestParam(value = "score2", required = false) int score2) {
-        if (!player.getScore().isEmpty()) {
+    public ModelAndView editLastScore(@RequestParam(value = "score", required = false) String score, @RequestParam(value = "score2", required = false) String score2) {
+        if (!player.getScore().isEmpty() && !player2.getScore().isEmpty()) {
             int item = player.getScore().size() - 1;
             int item2 = player.getScore().size() - 1;
-            int first = scoreService.getPlayerScore(player).get(player.getScore().size() - 2);
-            int second = scoreService.getPlayerScore(player2).get(player2.getScore().size() - 2);
-            scoreService.getPlayerScore(player).set(item, first + score);
-            scoreService.getPlayerScore(player2).set(item2, second + score2);
+            try {
+                scoreService.getPlayerScore(player).set(item, Integer.parseInt(score));
+            } catch (Exception e) {
+                scoreService.addPlayerScore(player, true);
+            }
+            try {
+                scoreService.getPlayerScore(player2).set(item2, Integer.parseInt(score2));
+            } catch (Exception e) {
+                scoreService.addPlayerScore(player2, true);
+            }
         }
 
         return new ModelAndView("redirect:/");

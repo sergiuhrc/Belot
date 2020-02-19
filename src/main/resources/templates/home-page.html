@@ -5,10 +5,10 @@
 <body>
 <div th:replace="fragments/head :: head"></div>
 <div class="dash">
-<!--    <div th:replace="fragments/nav_menu :: nav_menu">-->
-<!--    </div>-->
+    <!--    <div th:replace="fragments/nav_menu :: nav_menu">-->
+    <!--    </div>-->
     <div class="dash-app">
-<!--        <header th:replace="fragments/header :: header"></header>-->
+        <!--        <header th:replace="fragments/header :: header"></header>-->
         <main class="dash-content">
             <div class="container-fluid">
                 <a data-toggle="modal" data-target="#exampleModalAdd" class="btn btn-primary ">Add Score</a>
@@ -22,7 +22,7 @@
                     <div class="modal-dialog modal-sm" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel1">New message</h5>
+                                <h5 class="modal-title" id="exampleModalLabel1">Edit score</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -57,7 +57,7 @@
                     <div class="modal-dialog modal-sm" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">New score</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -94,7 +94,11 @@
                                 <div class="spur-card-icon">
                                     <i class="fas fa-table"></i>
                                 </div>
-                                <div class="spur-card-title">Joaca in doi</div>
+                                <div class="spur-card-title">
+                                    <label class="col-form-label" style="padding:3px;"
+                                           th:text="${player1_bolt}"> </label>
+                                    <label class="col-form-label" style="padding:3px;"
+                                           th:text="${player2_bolt}"> </label></div>
 
                             </div>
                             <div class="card-body row" style=" margin: auto; padding: 20px;">
