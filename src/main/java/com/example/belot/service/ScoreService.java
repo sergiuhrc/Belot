@@ -3,6 +3,7 @@ package com.example.belot.service;
 import com.example.belot.entity.Game;
 import com.example.belot.entity.Player;
 import com.example.belot.resource.ScoreResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,10 +13,12 @@ import java.util.Map;
 
 @Service
 public class ScoreService implements ScoreResource {
+    private static final int MINUSTEN = -10;
     List<Player> players = new ArrayList<>();
     Map<Player, Integer> playerScore = new HashMap<>();
-    private static final int MINUSTEN = -10;
-
+    Game game = new Game(101);
+    @Autowired
+    ScoreService scoreService;
 
     public List<Integer> getPlayerScore(Player player) {
         return player.getScore();
@@ -30,11 +33,8 @@ public class ScoreService implements ScoreResource {
         return playerScore;
     }
 
-    //to do for 3 players
-    Game game = new Game(101);
-
     @Override
-    public void setPlayerScore(Player player, int points, boolean isBolt) {
+    public void addPlayerScore(Player player, int points, boolean isBolt) {
         int lastScore = player.getScore().size() - 1;
         try {
             int score = points + player.getScore().get(lastScore);
@@ -44,30 +44,23 @@ public class ScoreService implements ScoreResource {
                 player.setScore(player.getScore().get(lastScore));
                 playerScore.put(player, score);
             } else {
-
                 player.setScore(score);
                 playerScore.put(player, score);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Cauza: " + e.getCause());
-            int score = points;
             if (isBolt) {
                 int bolt = player.getBolt() + 1;
                 player.setBolt(bolt);
                 player.setScore(player.getScore().get(lastScore));
-                playerScore.put(player, score);
+                playerScore.put(player, points);
             } else {
-
-                player.setScore(score);
-                playerScore.put(player, score);
+                player.setScore(points);
+                playerScore.put(player, points);
             }
         }
-
-
         if (player.getBolt() == 3) {
             player.setScore(player.getScore().get(lastScore) + MINUSTEN);
-            player.setBolt(0);
-//            playerScore.put(player, (player.getScore().get(lastScore) + MINUSTEN));
+
         }
     }
 
@@ -106,7 +99,6 @@ public class ScoreService implements ScoreResource {
         return null;
     }
 
-
     @Override
     public void createPlayer(Player player) {
         players.add(player);
@@ -122,25 +114,71 @@ public class ScoreService implements ScoreResource {
     }
 
     @Override
-    public void setPlayerScore(Player player, boolean isBolt) {
-        int lastScore = player.getScore().size() - 1;
-        if (isBolt) {
+    public void addPlayerScore(Player player, boolean isBolt) {
+        try {
+            int lastScore = player.getScore().get(player.getScore().size() - 1);
+            if (isBolt) {
 
-            player.setBolt(player.getBolt() + 1);
-            System.out.println(player.getBolt());
-            if (player.getBolt() == 3) {
-                System.out.println("Is bolt 3");
-                player.setScore(player.getScore().get(lastScore) + MINUSTEN);
-                player.setBolt(0);
-            } else if (player.getBolt() < 3) {
+                player.setBolt(player.getBolt() + 1);
+                if (player.getBolt() == 3) {
+                    System.out.println("Is bolt 3");
+                    player.setScore((lastScore) + (MINUSTEN));
+                    player.setBolt(0);
+                } else if (player.getBolt() < 3) {
+                    if (player.getScore().isEmpty()) {
+                        player.setScore(0);
+                    } else {
+                        player.setScore(lastScore);
+                    }
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            int lastScore = player.getScore().size() - 1;
+            if (isBolt) {
+                player.setBolt(player.getBolt() + 1);
                 if (player.getScore().isEmpty()) {
                     player.setScore(0);
                 } else {
-                    player.setScore(player.getScore().get(lastScore));
+                    System.out.println("Not here");
+                    player.setScore(lastScore);
                 }
             }
+
         }
     }
 
+
+//    @Override
+//    public void editPlayerScore(Player player, boolean isBolt) {
+//        try {
+//            int lastScore = player.getScore().size() - 1;
+//            if (isBolt) {
+//
+//                player.setBolt(player.getBolt() + 1);
+//                if (player.getBolt() == 3) {
+//                    player.setScore(player.getScore().get(lastScore) + MINUSTEN);
+//                    player.setBolt(0);
+//                } else if (player.getBolt() < 3) {
+//                    if (player.getScore().isEmpty()) {
+//                        player.setScore(0);
+//                    } else {
+//                        Integer previousScore = scoreService.getPlayerScore(player).get(lastScore);
+//                        scoreService.getPlayerScore(player).set(lastScore, previousScore);
+//                    }
+//                }
+//            }
+//        } catch (ArrayIndexOutOfBoundsException e) {
+//            int lastScore = player.getScore().size() - 1;
+//            if (isBolt) {
+//                if (player.getScore().isEmpty()) {
+//                    player.setScore(0);
+//                } else {
+//                    Integer previousScore = scoreService.getPlayerScore(player).get(lastScore);
+//                    scoreService.getPlayerScore(player).set(lastScore, previousScore);
+//                }
+//            }
+//
+//        }
+//    }
 
 }
