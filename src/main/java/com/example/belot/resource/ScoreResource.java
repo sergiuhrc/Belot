@@ -7,10 +7,14 @@ import java.util.Map;
 
 @Resource
 public interface ScoreResource {
-    public Map<Player, Integer> getPlayerScore();
-    public  void setPlayerScore(Player player, int points,boolean isBolt);
-    public  void createPlayer(Player player);
-    public  void deletePlayer(Player player);
+    Map<Player, Integer> getPlayerScore();
 
-    void setPlayerScore(Player player, boolean b);
+    void addPlayerScore(Player player, int points, boolean isBolt);
+
+    void createPlayer(Player player);
+
+    void deletePlayer(Player player);
+
+    void addPlayerScore(Player player, boolean b);
+//    void editPlayerScore(Player player, boolean b);
 }
