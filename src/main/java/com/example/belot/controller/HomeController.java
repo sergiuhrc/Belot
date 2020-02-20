@@ -19,7 +19,6 @@ public class HomeController {
     ScoreService scoreService;
     Player player = new Player();
     Player player2 = new Player();
-    Player player3 = new Player();
     List<Player> listOfPlayers = new ArrayList<>();
 
     public List<Player> getListOfPlayers() {
@@ -38,6 +37,13 @@ public class HomeController {
 
     public void setWinner(String winner) {
         this.winner = winner;
+    }
+
+    @GetMapping("/index")
+    public ModelAndView indexPage(Model model) {
+
+
+        return new ModelAndView("index");
     }
 
     @GetMapping("/")
@@ -90,16 +96,13 @@ public class HomeController {
         }
         System.out.println(scoreService.getPlayers());
         if (!scoreService.getPlayerScore(player).isEmpty()) {
-//                System.out.println("Winner " + scoreService.getWinner(scoreService.getPlayers()));
             try {
                 String win = scoreService.getWinner(scoreService.getPlayers());
                 if (win != null) {
-                    System.out.println("Winnerrrrrrrrrrrrrrrrrrrrrr>" + win);
                     setWinner(win);
                     return new ModelAndView("redirect:/win-page");
                 }
             } catch (Exception e) {
-                System.out.println("=-=-=");
             }
         }
 

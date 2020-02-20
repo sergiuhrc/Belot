@@ -42,9 +42,10 @@ public class TestController {
 
     @GetMapping("/test")
     public ModelAndView homePage(Model model) {
-        player.setName("Sergiu");
-        player2.setName("Dima");
-        player3.setName("Alex");
+        scoreService.getPlayers().clear();
+        player.setName("Serghei");
+        player2.setName("Dimaon");
+        player3.setName("Cristi");
         listOfPlayers.add(player);
         listOfPlayers.add(player2);
         listOfPlayers.add(player3);
@@ -95,12 +96,13 @@ public class TestController {
         }
         System.out.println(scoreService.getPlayers());
         if (!scoreService.getPlayerScore(player).isEmpty()) {
-//                System.out.println("Winner " + scoreService.getWinner(scoreService.getPlayers()));
-            String win = scoreService.getWinner(scoreService.getPlayers());
-            if (win != null) {
-                System.out.println("Winnerrrrrrrrrrrrrrrrrrrrrr>" + win);
-                setWinner(win);
-                return new ModelAndView("redirect:/win-page-test");
+            try {
+                String win = scoreService.getWinner(scoreService.getPlayers());
+                if (win != null) {
+                    setWinner(win);
+                    return new ModelAndView("redirect:/win-page-test");
+                }
+            } catch (Exception e) {
             }
         }
 
