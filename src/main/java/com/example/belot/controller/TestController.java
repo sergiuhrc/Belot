@@ -61,6 +61,9 @@ public class TestController {
         model.addAttribute("player_score", tail);
         model.addAttribute("player_score2", tail2);
         model.addAttribute("player_score3", tail3);
+        model.addAttribute("player1_bolt", player.getName() + " " + player.getBolt());
+        model.addAttribute("player2_bolt", player2.getName() + " " + player2.getBolt());
+        model.addAttribute("player3_bolt", player3.getName() + " " + player3.getBolt());
         model.addAttribute("player_name", player.getName());
         model.addAttribute("player_name_second", player2.getName());
         model.addAttribute("player_name_third", player3.getName());
@@ -72,21 +75,23 @@ public class TestController {
 
     @RequestMapping("/test/add-score")
     public ModelAndView addScore(@RequestParam(value = "score", required = false) String score, @RequestParam(value = "score2", required = false) String score2, @RequestParam(value = "score3", required = false) String score3) {
-
+        System.out.println("1>>>>>" + score);
+        System.out.println("2>>>>>" + score2);
+        System.out.println("3>>>>>" + score3);
         try {
-            scoreService.setPlayerScore(player, Integer.parseInt(score), false);
+            scoreService.addPlayerScore(player, Integer.parseInt(score), false);
         } catch (Exception e) {
-            scoreService.setPlayerScore(player, true);
+            scoreService.addPlayerScore(player, true);
         }
         try {
-            scoreService.setPlayerScore(player2, Integer.parseInt(score2), false);
+            scoreService.addPlayerScore(player2, Integer.parseInt(score2), false);
         } catch (Exception e) {
-            scoreService.setPlayerScore(player2, true);
+            scoreService.addPlayerScore(player2, true);
         }
         try {
-            scoreService.setPlayerScore(player3, Integer.parseInt(score3), false);
+            scoreService.addPlayerScore(player3, Integer.parseInt(score3), false);
         } catch (Exception e) {
-            scoreService.setPlayerScore(player3, true);
+            scoreService.addPlayerScore(player3, true);
         }
         System.out.println(scoreService.getPlayers());
         if (!scoreService.getPlayerScore(player).isEmpty()) {
@@ -114,24 +119,38 @@ public class TestController {
 
     @RequestMapping("test/new-game")
     public ModelAndView newGameStart() {
-        scoreService.getPlayerScore(player).removeAll(scoreService.getPlayerScore(player));
-        scoreService.getPlayerScore(player2).removeAll(scoreService.getPlayerScore(player2));
-        scoreService.getPlayerScore(player3).removeAll(scoreService.getPlayerScore(player3));
-
+        scoreService.getPlayerScore(player).clear();
+        scoreService.getPlayerScore(player2).clear();
+        scoreService.getPlayerScore(player3).clear();
+        player.setBolt(0);
+        player2.setBolt(0);
+        player3.setBolt(0);
         return new ModelAndView("redirect:/test");
     }
 
     @RequestMapping("test/edit-last-score")
-    public ModelAndView editLastScore(@RequestParam(value = "score", required = false) int score, @RequestParam(value = "score2", required = false) int score2, @RequestParam(value = "score3", required = false) int score3) {
+    public ModelAndView editLastScore(@RequestParam(value = "score", required = false) String score, @RequestParam(value = "score2", required = false) String score2, @RequestParam(value = "score3", required = false) String score3) {
         if (!player.getScore().isEmpty()) {
             int item = player.getScore().size() - 1;
 
             int first = scoreService.getPlayerScore(player).get(player.getScore().size() - 2);
             int second = scoreService.getPlayerScore(player2).get(player2.getScore().size() - 2);
             int third = scoreService.getPlayerScore(player3).get(player3.getScore().size() - 2);
-            scoreService.getPlayerScore(player).set(item, first + score);
-            scoreService.getPlayerScore(player2).set(item, second + score2);
-            scoreService.getPlayerScore(player3).set(item, third + score3);
+            try {
+                scoreService.getPlayerScore(player).set(item, first + Integer.parseInt(score));
+            } catch (Exception e) {
+                scoreService.addPlayerScore(player, true);
+            }
+            try {
+                scoreService.getPlayerScore(player2).set(item, second + Integer.parseInt(score2));
+            } catch (Exception e) {
+                scoreService.addPlayerScore(player2, true);
+            }
+            try {
+                scoreService.getPlayerScore(player3).set(item, third + Integer.parseInt(score3));
+            } catch (Exception e) {
+                scoreService.addPlayerScore(player3, true);
+            }
         }
 
         return new ModelAndView("redirect:/test");
