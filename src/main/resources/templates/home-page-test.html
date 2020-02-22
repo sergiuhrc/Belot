@@ -13,7 +13,7 @@
             <div class="container-fluid">
                 <a data-toggle="modal" data-target="#exampleModalAdd" class="btn btn-primary ">Add Score</a>
                 <a data-toggle="modal" data-target="#exampleModalEdit" class="btn btn-primary ">Edit Score</a>
-                <a th:href="@{/test/delete-last-score}" type="submit" class="btn btn-danger ">Delete Score</a>
+                <a class="btn btn-danger " th:href="@{/3players/delete-last-score}" type="submit">Delete Score</a>
                 <!--                <a th:href="@{/new-employee}" data-toggle="modal" data-target="#exampleModal" type="submit" class="btn btn-primary ">Edit Score</a>-->
 
                 <!--                start modal-->
@@ -28,7 +28,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form th:action="@{/test/edit-last-score}">
+                                <form th:action="@{/3players/edit-last-score}">
                                     <div class="form-group">
                                         <label for="score01" class="col-form-label" th:text="${player_name}"></label>
                                         <input th:name="score" id="score01" placeholder="Enter score"
@@ -69,7 +69,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form th:action="@{/test/add-score}">
+                                <form th:action="@{/3players/add-score}">
                                     <div class="form-group">
                                         <label for="score" class="col-form-label" th:text="${player_name}"></label>
                                         <input th:name="score" id="score" placeholder="Enter points"

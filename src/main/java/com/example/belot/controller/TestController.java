@@ -40,11 +40,11 @@ public class TestController {
         this.winner = winner;
     }
 
-    @GetMapping("/test")
+    @GetMapping("/3players")
     public ModelAndView homePage(Model model) {
         scoreService.getPlayers().clear();
         player.setName("Serghei");
-        player2.setName("Dimaon");
+        player2.setName("Dimon");
         player3.setName("Cristi");
         listOfPlayers.add(player);
         listOfPlayers.add(player2);
@@ -74,7 +74,7 @@ public class TestController {
     }
 
 
-    @RequestMapping("/test/add-score")
+    @RequestMapping("/3players/add-score")
     public ModelAndView addScore(@RequestParam(value = "score", required = false) String score, @RequestParam(value = "score2", required = false) String score2, @RequestParam(value = "score3", required = false) String score3) {
         System.out.println("1>>>>>" + score);
         System.out.println("2>>>>>" + score2);
@@ -106,20 +106,20 @@ public class TestController {
             }
         }
 
-        return new ModelAndView("redirect:/test");
+        return new ModelAndView("redirect:/3players");
     }
 
-    @RequestMapping("test/delete-last-score")
+    @RequestMapping("3players/delete-last-score")
     public ModelAndView deleteLastScore() {
         if (!player.getScore().isEmpty()) {
             scoreService.getPlayerScore(player).remove(player.getScore().size() - 1);
             scoreService.getPlayerScore(player2).remove(player2.getScore().size() - 1);
             scoreService.getPlayerScore(player3).remove(player3.getScore().size() - 1);
         }
-        return new ModelAndView("redirect:/test");
+        return new ModelAndView("redirect:/3players");
     }
 
-    @RequestMapping("test/new-game")
+    @RequestMapping("3players/new-game")
     public ModelAndView newGameStart() {
         scoreService.getPlayerScore(player).clear();
         scoreService.getPlayerScore(player2).clear();
@@ -127,10 +127,10 @@ public class TestController {
         player.setBolt(0);
         player2.setBolt(0);
         player3.setBolt(0);
-        return new ModelAndView("redirect:/test");
+        return new ModelAndView("redirect:/3players");
     }
 
-    @RequestMapping("test/edit-last-score")
+    @RequestMapping("3players/edit-last-score")
     public ModelAndView editLastScore(@RequestParam(value = "score", required = false) String score, @RequestParam(value = "score2", required = false) String score2, @RequestParam(value = "score3", required = false) String score3) {
         if (!player.getScore().isEmpty()) {
             int item = player.getScore().size() - 1;
@@ -155,7 +155,7 @@ public class TestController {
             }
         }
 
-        return new ModelAndView("redirect:/test");
+        return new ModelAndView("redirect:/3players");
     }
 
     @RequestMapping("/win-page-test")

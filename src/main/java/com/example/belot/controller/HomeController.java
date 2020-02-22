@@ -46,8 +46,9 @@ public class HomeController {
         return new ModelAndView("index");
     }
 
-    @GetMapping("/")
+    @GetMapping("/2players")
     public ModelAndView homePage(Model model) {
+        scoreService.getPlayers().clear();
         player.setName("Sergiu");
         player2.setName("Dima");
         listOfPlayers.add(player);
@@ -106,7 +107,7 @@ public class HomeController {
             }
         }
 
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("redirect:/2players");
     }
 
     @RequestMapping("/delete-last-score")
@@ -115,7 +116,7 @@ public class HomeController {
             scoreService.getPlayerScore(player).remove(player.getScore().size() - 1);
             scoreService.getPlayerScore(player2).remove(player2.getScore().size() - 1);
         }
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("redirect:/2players");
     }
 
     @RequestMapping("/new-game")
@@ -123,7 +124,7 @@ public class HomeController {
         scoreService.getPlayerScore(player).removeAll(scoreService.getPlayerScore(player));
         scoreService.getPlayerScore(player2).removeAll(scoreService.getPlayerScore(player2));
 
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("redirect:/2players");
     }
 
     @RequestMapping("/edit-last-score")
@@ -143,7 +144,7 @@ public class HomeController {
             }
         }
 
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("redirect:/2players");
     }
 
 
